@@ -4,7 +4,7 @@ from flask import Flask, request, Response, render_template, current_app, \
 from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed
 from flask.ext.login import LoginManager, login_user, logout_user, \
      login_required, current_user, UserMixin
-from datetime import datetime
+from datetime import timedelta
 from flask.ext.cors import CORS
 
 # login lib
@@ -17,7 +17,7 @@ login_manager = LoginManager(app)
 login_manager.session_protection = 'strong'
 
 app.secret_key = 'you-will-never-guest-out'
-app.permanent_session_lifetime = timedelta
+app.permanent_session_lifetime = timedelta(minutes=1)
 
 user_info = [{'id':1,'name':'abc','passwd':'111111','role':Permission.MODERATE_COMMENTS}]
 class User(UserMixin):
