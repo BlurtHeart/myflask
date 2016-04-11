@@ -43,6 +43,95 @@ class User(UserMixin):
 def forbidden_user(error):
     return 'user forbiddent!' + str(error)
 
+@app.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
+@login_manager.user_loader
+def load_user(user_id):
+    name = ''
+    for each in user_info:
+        id = int(user_id)
+        if id == each['id']:
+            name = each['name']
+            break
+    user = User(user_id, name)
+    return user
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    print 'client unauthorized'
+    print 'login session:', session
+    return 'unauthorized'
+
+@login_required
+@admin_required
+@app.route('/admin')
+def for_admins_only():
+    return 'For Administrators'
+
+@app.route('/moderator')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def for_moderators_only():
+    return 'For Comment Moderators'
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        print 'post login session:', session
+        if request.json == None:
+            name = request.form.get('username')
+            passwd = request.form.get('passwd')
+        else:
+            print 'request:', request.json
+            name = request.json.get('username')
+            passwd = request.json.get('passwd')
+        user_id = 0
+        for each in user_info:
+            if name == each['name']:
+                user_id = each['id']
+        user = User(user_id, name)
+        login_user(user)
+        identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+        return 'login ok'
+    else:
+        print 'get login session:', session
+        return render_template('login.html')
+    
+@app.route('/logout')
+@login_required
+def logout():
+    print 'get logout session:', session
+    logout_user()
+    return 'logout.'
+
+@app.route('/secret')
+@login_required
+def secret():
+    print 'get secret session:', session
+    return 'secret'
+
+@login_required
+def get_test():
+    return 'get test'
+
+@login_required
+def post_test():
+    return 'post test'
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    print request.headers
+    print request.path
+    if request.method == 'GET':
+        return get_test()
+    elif request.method == 'POST':
+        return post_test()
+    else:
+        return 'Unkown Method'
+
 @app.route('/')
 def index():
     return 'Home Page'
