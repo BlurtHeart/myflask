@@ -15,10 +15,13 @@ proj.directory-list = [{'dirloc': loc('templates'),
                         'filter': u'*',
                         'include_hidden': False,
                         'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('app'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
                         'watch_for_changes': True}]
-proj.file-list = [loc('decorators.py'),
-                  loc('LICENCE'),
-                  loc('main.py'),
-                  loc('models.py'),
+proj.file-list = [loc('LICENCE'),
                   loc('README.md')]
 proj.file-type = 'shared'
