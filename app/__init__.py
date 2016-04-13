@@ -17,3 +17,19 @@ def create_app():
     from .api_1_0 import api as api_1_0_blueprint
     app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1.0')
     return app
+
+# create db
+from .sqllib import DataBaseClient
+def create_db():
+    sql = "create table user_info ( \
+    `id` int not null, \
+    `username` varchar(20) not null unique, \
+    `passwd` varchar(10) not null, \
+    `role` int not null, \
+    primary key (`id`))"
+    db = DataBaseClient(path='data-base.db')
+    ret = db.execute(sql)
+    if not ret:
+        return 0    # failed
+    return 1
+

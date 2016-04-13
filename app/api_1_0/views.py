@@ -13,21 +13,6 @@ from ..models import User, user_info
 from ..decorators import admin_required, permission_required
 from ..models import Permission, Role
 
-# create db
-from ..sqllib import DataBaseClient
-def create_db():
-    sql = "create table user_info ( \
-    `id` int not null, \
-    `username` varchar(20) not null unique, \
-    `passwd` varchar(10) not null, \
-    `role` int not null, \
-    primary key (`id`))"
-    db = DataBaseClient(path='data-base.db')
-    ret = db.execute(sql)
-    if not ret:
-        return 0    # failed
-    return 1
-
 @api.errorhandler(403)
 def forbidden_user(error):
     return 'user forbiddent!' + str(error)
