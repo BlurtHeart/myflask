@@ -13,9 +13,13 @@ from ..models import User, user_info
 from ..decorators import admin_required, permission_required
 from ..models import Permission, Role
 
-@api.errorhandler(403)
+@api.app_errorhandler(403)
 def forbidden_user(error):
-    return 'user forbiddent!' + str(error)
+    return 'user forbiddent!' + str(error), 403
+
+@api.app_errorhandler(404)
+def api_404(error):
+    return '404 not found!', 404
 
 @api.after_request
 def after_request(response):
@@ -34,6 +38,7 @@ def for_admins_only():
 def for_moderators_only():
     return 'For Comment Moderators'
 
+@api.route('/')
 @api.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
