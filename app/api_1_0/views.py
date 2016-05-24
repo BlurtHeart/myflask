@@ -43,7 +43,7 @@ def for_moderators_only():
 def login():
     if request.method == 'POST':
         print 'post login session:', session
-        if request.json == None:
+        if request.json is None:
             name = request.form.get('username')
             passwd = request.form.get('passwd')
         else:
@@ -92,7 +92,7 @@ def test():
     elif request.method == 'POST':
         return post_test()
     else:
-        return 'Unkown Method'
+        return 'Unknown Method'
 
 @api.route('/')
 def index():
