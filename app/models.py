@@ -1,6 +1,6 @@
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from flask import session
-from . import login_manager
+from . import login_manager, db
 
 class Permission:
     FOLLOW = 0X01
@@ -9,7 +9,13 @@ class Permission:
     MODERATE_COMMENTS = 0X08
     ADMINSTER = 0X80
     
-class Role():
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    role_name = db.Column(db.String(20), unique=True)
+    permissions = db.Column(db.Integer)
+    
+    @staticmethod
     def insert_roles():
         roles = {
             'User':(Permission.FOLLOW |
@@ -58,7 +64,4 @@ def unauthorized():
     print 'client unauthorized'
     print 'login session:', session
     return 'unauthorized'
-
-if __name__ == '__main__':
-    print Role.query.filter_by(default=True).first()
     

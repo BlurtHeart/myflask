@@ -1,6 +1,13 @@
-from app import create_app
+from app import create_app, db
+import os
 
 app = create_app()
+# why here push app context
+context = app.app_context()
+context.push()
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+db.create_all()
 print app.url_map
 
 if __name__ == "__main__":
