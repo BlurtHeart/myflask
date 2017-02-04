@@ -3,7 +3,9 @@ from flask.ext.cors import CORS
 from flask.ext.login import LoginManager
 from datetime import timedelta
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.bootstrap import Bootstrap
 
+bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 db = SQLAlchemy()
@@ -12,6 +14,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     CORS(app)
+    bootstrap.init_app(app)
     app.secret_key = 'you-will-never-guest-out'
     app.permanent_session_lifetime = timedelta(minutes=1)
 

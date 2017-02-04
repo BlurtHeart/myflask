@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from flask import Flask, request, Response, render_template, current_app, \
      session
 from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed
@@ -15,11 +17,19 @@ from ..models import Permission, Role
 
 @api.app_errorhandler(403)
 def forbidden_user(error):
-    return 'user forbiddent!' + str(error), 403
+    return render_template("utils.html", content='User Forbidden!')
+
+@api.app_errorhandler(401)
+def forbidden_user(error):
+    return render_template("utils.html", content='User Unauthorized!')
 
 @api.app_errorhandler(404)
 def api_404(error):
-    return '404 not found!', 404
+    return render_template("utils.html", content='Page Not Found!')
+
+@api.app_errorhandler(500)
+def api_404(error):
+    return render_template("utils.html", content='Internal Server Error!')
 
 @api.after_request
 def after_request(response):
@@ -57,17 +67,23 @@ def login():
         user = User(user_id, name)
         login_user(user)
         identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-        return 'login ok'
+        return render_template('utils.html', content=u'login ok!')
     else:
         print 'get login session:', session
         return render_template('login.html')
-    
+
+@login_required
+@admin_required
+@api.route('/profile')
+def get_profile():
+    return 'user profile'
+   
 @api.route('/logout')
 @login_required
 def logout():
     print 'get logout session:', session
     logout_user()
-    return 'logout.'
+    return render_template('utils.html', content=u'logout!')
 
 @api.route('/secret')
 @login_required
@@ -93,10 +109,6 @@ def test():
         return post_test()
     else:
         return 'Unknown Method'
-
-@api.route('/')
-def index():
-    return 'Home Page'
 
 @api.route('/about')
 def about():
