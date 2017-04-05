@@ -51,6 +51,11 @@
     {% block page_content %}{% endblock -%}
 {% endblock %}
 
+{% block scripts %}
+    {{ super() }}
+    {% block script %}{% endblock -%}
+{% endblock %}
+
 {% block body %}
     {{ super() }}    
     <nav class="navbar navbar-inverse navbar-fixed-bottom">
@@ -59,4 +64,3 @@
         </div>
     </nav>
 {% endblock %}
-
