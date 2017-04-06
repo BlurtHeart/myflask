@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="profile-header">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <strong>用户信息</strong>
+            </h3>
+        </div>
+        <table class="table">
+                <tr><td><b>id:</b></td><td>{{ user.id }}</td></tr>
+                <tr><td><b>email:</b></td><td>{{ user.email }}</td></tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

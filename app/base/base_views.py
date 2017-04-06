@@ -1,29 +1,80 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, current_app, request, flash
 from . import base
+from ..models import User
+from .. import db
+from flask_login import login_user, logout_user, \
+     login_required, current_user
+from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
+# login lib
+from ..decorators import admin_required, permission_required
+from ..models import Permission, Role
+import json
+
+@base.app_errorhandler(403)
+def forbidden_403(error):
+    return render_template("utils.html", content='User Forbidden!')
+
+@base.app_errorhandler(401)
+def forbidden_401(error):
+    return render_template("utils.html", content='User Unauthorized!')
+
+@base.app_errorhandler(404)
+def base_404(error):
+    return render_template("utils.html", content='Page Not Found!')
+
+@base.app_errorhandler(500)
+def base_500(error):
+    return render_template("utils.html", content='Internal Server Error!')
 
 @base.route('/')
 def base_index():
 	return render_template('index.html')
 
-@base.route('/login')
+@base.route('/login', methods=['POST', 'GET'])
 def base_login():
-	return redirect(url_for('api_v1.0.login'))
+    if request.method == 'POST':
+        if request.json is None:
+            email = request.form.get('email')
+            passwd = request.form.get('passwd')
+        else:
+            email = request.json.get('email')
+            passwd = request.json.get('passwd')
+        user = User.query.filter_by(email=str(email)).first()
+        if user is not None and user.verify_password(passwd):
+            login_user(user)
+            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+            return render_template('utils.html', content=u'login ok!')
+        else:
+            flash('Invalid username or password.')
+            return render_template('login.html')
+    else:
+        return render_template('login.html')
 
 @base.route('/logout')
+@login_required
 def base_logout():
-    return redirect(url_for('api_v1.0.logout'))
+    logout_user()
+    return render_template('utils.html', content=u'logout!')
 
 @base.route('/register', methods=['POST', 'GET'])
 def base_register_user():
-	if request.method=="GET":
-		return render_template('register.html')
-	else:
-		return redirect(url_for("base.base_index"))
+    if request.method=="GET":
+       return render_template('register.html')
+    else:
+        print request.form
+        email = request.form.get('email')
+        password = request.form.get("password")
+        user = User(email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("base.base_index"))
 
 @base.route('/about')
 def base_about():
-    return redirect(url_for('api_v1.0.about'))
+    return render_template('utils.html', content="About Page")
 
 @base.route('/profile')
+@login_required
 def base_profile():
-    return redirect(url_for('api_v1.0.get_profile'))
+    userinfo = json.dumps({"email":current_user.email, "user_id":current_user.id})
+    return render_template('user.html', user=current_user)

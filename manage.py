@@ -8,7 +8,6 @@ context.push()
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 db.create_all()
-print app.url_map
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
