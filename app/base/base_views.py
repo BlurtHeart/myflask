@@ -59,7 +59,7 @@ def base_logout():
 @base.route('/register', methods=['POST', 'GET'])
 def base_register_user():
     if request.method=="GET":
-       return render_template('register.html')
+        return render_template('register.html')
     else:
         print request.form
         email = request.form.get('email')
@@ -67,7 +67,10 @@ def base_register_user():
         user = User(email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for("base.base_index"))
+        loginuser = User.query.filter_by(email=str(email)).first()
+        login_user(loginuser)
+        identity_changed.send(current_app._get_current_object(), identity=Identity(loginuser.id))
+        return redirect(url_for("base.base_profile"))
 
 @base.route('/about')
 def base_about():
@@ -78,3 +81,15 @@ def base_about():
 def base_profile():
     userinfo = json.dumps({"email":current_user.email, "user_id":current_user.id})
     return render_template('user.html', user=current_user)
+
+@base.route('/nickname/set', methods=['POST', 'GET'])
+@login_required
+def base_set_nickname():
+    if request.method == 'GET':
+        return render_template('userupdate.html')
+    else:
+        nickname = request.form.get('nickname')
+        current_user.name = nickname
+        db.session.add(current_user)
+        db.session.commit()
+        return redirect(url_for("base.base_profile"))
