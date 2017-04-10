@@ -93,3 +93,9 @@ def base_set_nickname():
         db.session.add(current_user)
         db.session.commit()
         return redirect(url_for("base.base_profile"))
+
+@base.route('/token')
+@login_required
+def get_token():
+    token = current_user.generate_confirmation_token(300)
+    return token

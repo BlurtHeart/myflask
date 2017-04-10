@@ -1,8 +1,9 @@
 from flask_login import UserMixin, AnonymousUserMixin
-from flask import session, abort
+from flask import session, abort, current_app
 from . import login_manager, db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 class Permission:
     FOLLOW = 0X01
@@ -72,6 +73,10 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         print 'passwd_hash:', self.passwd_hash
         return check_password_hash(self.passwd_hash, password)
+
+    def generate_confirmation_token(self, expires_in=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in)
+        return s.dumps({'confirm': self.id})
     
     def can(self, permissions):
         return self.role is not None and \

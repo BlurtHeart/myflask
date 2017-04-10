@@ -11,7 +11,8 @@
         <table class="table">
                 <tr><td><b>用户id：</b></td><td>{{ user.id }}</td></tr>
                 <tr><td><b>邮箱：</b></td><td>{{ user.email }}</td></tr>
-                <tr><td><b>昵称：</b></td><td>{{ user.name }}</td><td><a href="nickname/set">设置</a></td></tr>
+                <tr><td><b>昵称：</b></td><td>{{ user.name }}</td><td><a href="nickname/set">{% if current_user.name %}修改
+{% else %}设置{% endif %}</a></td></tr>
         </table>
     </div>
 </div>
