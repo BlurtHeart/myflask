@@ -41,7 +41,7 @@ class User(UserMixin, db.Model):
 #    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     passwd_hash = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, index=True)
-#    confirmed = db.Column(db.Boolean, default=False)
+    confirmed = db.Column(db.Boolean, default=False)
 #    name = db.Column(db.String(64))
 #    location = db.Column(db.String(64))
 #    about_me = db.Column(db.Text())
@@ -71,12 +71,23 @@ class User(UserMixin, db.Model):
         self.passwd_hash = generate_password_hash(password)
     
     def verify_password(self, password):
-        print 'passwd_hash:', self.passwd_hash
         return check_password_hash(self.passwd_hash, password)
 
     def generate_confirmation_token(self, expires_in=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expires_in)
         return s.dumps({'confirm': self.id})
+
+    def confirm(self, token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+        self.confirmed = True
+        db.session.add(self)
+        return True
     
     def can(self, permissions):
         return self.role is not None and \

@@ -4,10 +4,12 @@ from flask_login import LoginManager
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
 from config.config import config
 
 bootstrap = Bootstrap()
 login_manager = LoginManager()
+mail = Mail()
 login_manager.session_protection = 'strong'
 db = SQLAlchemy()
 
@@ -18,6 +20,7 @@ def create_app():
     app.config.from_object(config['development'])
     # config['development'].init_app(app)
 
+    mail.init_app(app)
     bootstrap.init_app(app)
     app.secret_key = 'you-will-never-guest-out'
     app.permanent_session_lifetime = timedelta(minutes=5)

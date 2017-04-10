@@ -8,6 +8,7 @@ from flask_principal import Principal, Identity, AnonymousIdentity, identity_cha
 # login lib
 from ..decorators import admin_required, permission_required
 from ..models import Permission, Role
+from ..libs.email import send_email
 import json
 
 @base.app_errorhandler(403)
@@ -70,6 +71,12 @@ def base_register_user():
         loginuser = User.query.filter_by(email=str(email)).first()
         login_user(loginuser)
         identity_changed.send(current_app._get_current_object(), identity=Identity(loginuser.id))
+
+        # confirm mail
+        token = user.generate_confirmation_token(300)
+        send_email(user.email, 'Confirm Your Account', 'email/confirm', 
+        user=user, token=token)
+        flash('A confirmation email has been sent to you by email.')
         return redirect(url_for("base.base_profile"))
 
 @base.route('/about')
@@ -94,8 +101,13 @@ def base_set_nickname():
         db.session.commit()
         return redirect(url_for("base.base_profile"))
 
-@base.route('/token')
+@base.route('/confirm/<token>')
 @login_required
-def get_token():
-    token = current_user.generate_confirmation_token(300)
-    return token
+def confirm(token):
+    if current_user.confirmed:
+        return redirect(url_for('base.base_index'))
+    if current_user.confirm(token):
+        flash('You have confirmed your account successfully!')
+    else:
+        flash('The confirmation link is invalid or has expired.')
+    return redirect(url_for('base.base_index'))
