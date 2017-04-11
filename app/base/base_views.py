@@ -29,7 +29,7 @@ def base_500(error):
 
 @base.route('/')
 def base_index():
-	return render_template('index.html')
+    return render_template('index.html')
 
 @base.route('/login', methods=['POST', 'GET'])
 def base_login():

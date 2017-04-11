@@ -10,6 +10,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'abcd12345'
     FLASKY_MAIL_SUBJECT_PREFIX = '[myflask]'
     FLASKY_MAIL_SENDER = 'myflask admin <stevecloud@126.com>'
+    FLASKY_ADMIN = "fuhongbofhb@163.com"
 
 class DevelopmentConfig(Config):
     DEBUG = True

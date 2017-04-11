@@ -18,7 +18,7 @@ class Role(db.Model):
     role_name = db.Column(db.String(20), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    #users = db.relationship('User', backref='role', lazy='dynamic')
+    users = db.relationship('User', backref='role', lazy='dynamic')
     
     @staticmethod
     def insert_roles():
@@ -32,13 +32,21 @@ class Role(db.Model):
                          Permission.MODERATE_COMMENTS, False),
             'Administrator':(0xff, False)
         }
+        for r in roles:
+            role = Role.query.filter_by(role_name=r).first()
+            if role is None:
+                role = Role(role_name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()
         
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
 #    email = db.Column(db.String(64), unique=True, index=True)
     name = db.Column(db.String(20), index=True)
-#    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     passwd_hash = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, index=True)
     confirmed = db.Column(db.Boolean, default=False)
@@ -48,7 +56,7 @@ class User(UserMixin, db.Model):
 #    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
 #    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     
-    role = {'permissions':Permission.MODERATE_COMMENTS}
+    # role = {'permissions':Permission.MODERATE_COMMENTS}
     def __init__(self, **kwargs):
        # if self.role is None:
        #     self.role = Role.query.filter_by(default=True).first()
@@ -63,6 +71,12 @@ class User(UserMixin, db.Model):
         #         break
         # super(User, self).__init__(**kwargs)
         super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config['FLASKY_ADMIN']:
+                self.role = Role.query.filter_by(permissions=0xff).first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+
     @property
     def password(self):
         raise AttributeError('password is not readable')
@@ -91,7 +105,7 @@ class User(UserMixin, db.Model):
     
     def can(self, permissions):
         return self.role is not None and \
-               (self.role['permissions'] &permissions) == permissions
+               (self.role.permissions &permissions) == permissions
     def is_administrator(self):
         return self.can(Permission.ADMINSTER)
 

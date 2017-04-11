@@ -31,6 +31,11 @@ def create_app():
     app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1.0')
     from .base import base
     app.register_blueprint(base)
+
+    from models import Role
+    @app.before_first_request
+    def build_up_before_start():
+        Role.insert_roles()
     return app
 
 # create db
