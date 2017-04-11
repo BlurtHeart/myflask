@@ -54,7 +54,8 @@ class User(UserMixin, db.Model):
 #    location = db.Column(db.String(64))
 #    about_me = db.Column(db.Text())
 #    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-#    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
     
     # role = {'permissions':Permission.MODERATE_COMMENTS}
     def __init__(self, **kwargs):
@@ -115,6 +116,15 @@ class AnonymousUser(AnonymousUserMixin):
 
     def is_administrator(self):
         return False
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
 login_manager.anonymous_user = AnonymousUser
 

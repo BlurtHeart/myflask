@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, Response, render_template, current_app, \
-     session
+     session, url_for, redirect
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from flask_login import login_user, logout_user, \
-     login_required 
+     login_required, current_user
 from datetime import timedelta
 from flask_cors import CORS
 from . import api
-from ..models import User
+from .. import db
 
 # login lib
 from ..decorators import admin_required, permission_required
-from ..models import Permission, Role
+from ..models import Permission, Role, User, Post
 
 @api.after_request
 def after_request(response):
@@ -32,11 +32,20 @@ def for_admins_only():
 def for_moderators_only():
     return 'For Comment Moderators'
 
-@api.route('/secret')
+@api.route('/post', methods=['POST', 'GET'])
 @login_required
-def secret():
-    print 'get secret session:', session
-    return 'secret'
+@permission_required(Permission.WRITE_ARTICLES)
+def post_articles():
+    if request.method == 'POST':
+        body = request.form.get('body')
+        title = request.form.get('title')
+        author = current_user._get_current_object()
+        post = Post(body=body, author=author, title=title)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('base.base_index'))
+    else:
+        return render_template('post.html')
 
 @login_required
 def get_test():

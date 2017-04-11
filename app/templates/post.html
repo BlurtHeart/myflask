@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+	<script type="text/javascript">	
+    	function checkEmpty(thisform) {
+    		if (thisform.title.value=="") {
+    			alert("标题不能为空");
+    			return false;
+    		}
+    		if (thisform.body.value=="") {
+    			alert("内容不能为空");
+    			return false;
+    		}
+    	}
+	</script>
+
+	<div class="header">
+		<h1><b>写下你的观点</b></h1>
+	</div>
+	<div class="container">
+		<div class="item">
+			<form action="" onsubmit="return checkEmpty(this)" method="post" >
+				<input type="text" placeholder="标题" name="title"/><br/>
+				<input type="text", placeholder="内容" name="password" id="body"/><br/>
+				<input type="submit" value="提交"/>
+			</form>
+		</div>
+	</div>
+{% endblock %}
