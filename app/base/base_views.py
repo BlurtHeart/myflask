@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, current_app, request, flash
 from . import base
-from ..models import User
+from ..models import User, Post
 from .. import db
 from flask_login import login_user, logout_user, \
      login_required, current_user
@@ -29,7 +29,11 @@ def base_500(error):
 
 @base.route('/')
 def base_index():
-    return render_template('index.html')
+    posts = Post.query.all()
+    for post in posts:
+        print post.author.name, post.body, post.title
+    print 'posts:', posts
+    return render_template('index.html', posts=posts)
 
 @base.route('/login', methods=['POST', 'GET'])
 def base_login():

@@ -45,7 +45,12 @@ def post_articles():
         db.session.commit()
         return redirect(url_for('base.base_index'))
     else:
-        return render_template('post.html')
+        return render_template('editpost.html')
+
+@api.route('/post/show/<id>')
+def get_post_by_id(id):
+    post = Post.query.filter_by(id=id).first()
+    return render_template('post.html', post=post)
 
 @login_required
 def get_test():
