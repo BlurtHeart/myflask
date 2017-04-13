@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, Response, render_template, current_app, \
-     session, url_for, redirect
+     session, url_for, redirect, flash
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from flask_login import login_user, logout_user, \
      login_required, current_user
@@ -32,6 +32,16 @@ def for_admins_only():
 def for_moderators_only():
     return 'For Comment Moderators'
 
+@api.route('/profile/<userid>')
+@login_required
+def otheruser_profile(userid):
+    user = User.query.filter_by(id=userid).first()
+    if not user:
+        return render_template('utils.html', content='没有此用户！')
+    follows = [{'user':item.follower, 'timestamp':item.timestamp}
+                for item in user.followers]
+    return render_template('otheruser.html', user=user, follows=follows)
+
 @api.route('/post', methods=['POST', 'GET'])
 @login_required
 @permission_required(Permission.WRITE_ARTICLES)
@@ -51,6 +61,31 @@ def post_articles():
 def get_post_by_id(id):
     post = Post.query.filter_by(id=id).first()
     return render_template('post.html', post=post)
+
+@api.route('/follow/<userid>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(userid):
+    user = User.query.filter_by(id=userid).first()
+    if user is None:
+        flash('Invalid user')
+        return redirect(url_for('base.base_index'))
+    if current_user.is_following(user):
+        flash('You have already followed this user')
+        return redirect(url_for('.otheruser_profile', userid=user.id))
+    current_user.follow(user)
+    flash('You are now following %s' % user.name)
+    return redirect(url_for('.otheruser_profile', userid=user.id))
+
+@api.route('/unfollow/<userid>')
+@login_required
+def unfollow(userid):
+    user = User.query.filter_by(id=userid).first()
+    if user is None:
+        flash('Invalid User')
+        return redirect(url_for('base.base_index'))
+    current_user.unfollow(user)
+    return redirect(url_for('.otheruser_profile', userid=user.id))
 
 @login_required
 def get_test():

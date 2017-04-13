@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="profile-header">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <strong>用户信息</strong>
+            </h3>
+        </div>
+        <table class="table">
+                <tr><td><b>用户id：</b></td><td>{{ user.id }}</td></tr>
+                <tr><td><b>邮箱：</b></td><td>{{ user.email }}</td></tr>
+                <tr><td><b>昵称：</b></td><td>{{ user.name }}</td></tr>
+        </table>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <strong>关注他的人</strong>
+            </h3>
+        </div>
+        <table class="table">
+            {% for follow in follows %}
+                <tr><td><b><a href="{{ url_for('api_v1.0.otheruser_profile', userid=follow.user.id) }}">{{ follow.user.name }}</a></b></td></tr>
+            {% endfor %}
+        </table> 
+    </div>
+</div>
+
+{% if not current_user.is_following(user) %}
+    <a href="{{ url_for('api_v1.0.follow', userid=user.id) }}"><button id="followe-user">关注用户</button></a>
+{% else %}
+    <a href="{{ url_for('api_v1.0.unfollow', userid=user.id) }}"><button id="unfollowe-user">取消关注</button></a>
+{% endif %}
+{% endblock %}
