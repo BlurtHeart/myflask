@@ -30,9 +30,6 @@ def base_500(error):
 @base.route('/')
 def base_index():
     posts = Post.query.all()
-    for post in posts:
-        print post.author.name, post.body, post.title
-    print 'posts:', posts
     return render_template('index.html', posts=posts)
 
 @base.route('/login', methods=['POST', 'GET'])

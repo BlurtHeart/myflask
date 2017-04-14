@@ -42,14 +42,16 @@
 {% endblock %}
 
 {% block content %}
-    {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message }}
-        </div>
-    {% endfor %}
-
-    {% block page_content %}{% endblock -%}
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    
+        {% block page_content %}{% endblock -%}
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -61,6 +63,7 @@
     {{ super() }} 
     <!-- footer占位    -->
     <div style="height:60px;"></div>
+
     <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="container"> 
             <p class="navbar-text">Copyright © Steve Cloud</p>
