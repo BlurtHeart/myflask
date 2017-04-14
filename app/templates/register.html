@@ -42,11 +42,13 @@
 	</div>
 	<div class="container">
 		<div class="item">
-			<form action="" onsubmit="return validate_form(this)" method="post" >
-				<input type="text" placeholder="please input your email" name="email"/><br/>
-				<input type="password", placeholder="please input your password" name="password" id="password1"/><br/>
-				<input type="password", placeholder="please check your password" name="checkpassword" id="password2"><br/>
-				<input type="submit" value="Regist"/>
+			<form role="form" action="" onsubmit="return validate_form(this)" method="post" >
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="please input your email" name="email"/><br/>
+					<input type="password" class="form-control" placeholder="please input your password" name="password" id="password1"/><br/>
+					<input type="password" class="form-control" placeholder="please check your password" name="checkpassword" id="password2"><br/>
+					<input type="submit" value="Regist"/>
+				</div>
 			</form>
 		</div>
 	</div>
