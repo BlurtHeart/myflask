@@ -32,9 +32,12 @@ def for_admins_only():
 def for_moderators_only():
     return 'For Comment Moderators'
 
-@api.route('/profile/<userid>')
+@api.route('/profile/<int:userid>')
 @login_required
 def otheruser_profile(userid):
+    if current_user.id == userid:
+        return redirect(url_for('base.base_profile'))
+
     user = User.query.filter_by(id=userid).first()
     if not user:
         return render_template('utils.html', content='没有此用户！')

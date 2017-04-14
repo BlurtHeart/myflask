@@ -15,7 +15,7 @@
         </table>
         <div class="panel-heading">
             <h3 class="panel-title">
-                <strong>关注他的人</strong>
+                <strong>{% if current_user.id != user.id %}关注他的人{% else %}我的粉丝{% endif %}</strong>
             </h3>
         </div>
         <table class="table">
@@ -26,9 +26,11 @@
     </div>
 </div>
 
-{% if not current_user.is_following(user) %}
-    <a href="{{ url_for('api_v1.0.follow', userid=user.id) }}"><button id="followe-user">关注用户</button></a>
-{% else %}
-    <a href="{{ url_for('api_v1.0.unfollow', userid=user.id) }}"><button id="unfollowe-user">取消关注</button></a>
+{% if current_user.id != user.id %}
+    {% if not current_user.is_following(user) %}
+        <a href="{{ url_for('api_v1.0.follow', userid=user.id) }}"><button id="followe-user">关注用户</button></a>
+    {% else %}
+        <a href="{{ url_for('api_v1.0.unfollow', userid=user.id) }}"><button id="unfollowe-user">取消关注</button></a>
+    {% endif %}
 {% endif %}
 {% endblock %}
