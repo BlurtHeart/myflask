@@ -4,18 +4,38 @@
 	<div class="header">
 		<h1>Login</h1>
 	</div>
-	<div class="container">
-		<div class="item">
-			<form role="form" action="" method="post">
-				<div class="form-group">
-					<input type="text" class="form-control" placeholder="please input email" name="email"/><br/>
-					<input type="password" class="form-control" placeholder="please input passwd" name="passwd"/><br/>
-					<input type="submit" value="Login"/>
-				</div>
-			</form>
+	<div class="container-fluid">
+		<a href="#mylogin" data-toggle="modal" class="btn btn-primary btn-lg">点击登录</a>
+		<div class="modal fade" id="mylogin" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            	</button>
+				<h4 class="modal-title" id="mymodaltitle">用户登录</h4>
+			</div>
+			<div class="modal-body">
+				<form role="form" class="form-horizontal" action="" method="post">
+					<div class="form-group">
+						<label class="control-label col-sm-3">用户名</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" placeholder="please input email" name="email"/><br/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-3">密码</label>
+						<div class="col-sm-9">
+							<input type="password" class="form-control" placeholder="please input passwd" name="passwd"/><br/>
+							<input type="submit" class="btn btn-primary" align="right" value="Login"/>
+					</div>
+						</div>
+				</form>
+			</div>
 		</div>
-		<a href="/forget">forget password?</a><br/>
-		<a href="/register">register</a>
+		</div>
+		</div>
 	</div>
 	<!-- <div class="container-fluid">
 	<div class="row-fluid">

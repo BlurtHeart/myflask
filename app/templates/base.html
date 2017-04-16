@@ -36,7 +36,70 @@
                             </ul>
                     </li>
                 {% else %}
-                    <li><a href="{{ url_for('base.base_login') }}">登录</a></li>
+                    <!-- <li><a href="{{ url_for('base.base_login') }}">登录</a></li> -->
+                    <li><a href="#mylogin" data-toggle="modal">登录</a></li>
+                    <div class="modal fade" id="mylogin" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                            &times;
+                            </button>
+                            <h4 class="modal-title" id="mymodaltitle">用户登录</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" class="form-horizontal" action="/login" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">用户名</label>
+                                    <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="please input email"            name="email"/><br/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">密码</label>
+                                    <div class="col-sm-9">
+                            <input type="password" class="form-control" placeholder="please input           passwd" name="passwd"/><br/>
+                            <input type="submit" class="btn btn-primary" align="right" value="Login"            />
+                                </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <li><a href="#myregister" data-toggle="modal">注册</a></li>
+                    <div class="modal fade" id="myregister" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                            &times;
+                            </button>
+                            <h4 class="modal-title" id="mymodaltitle">用户注册</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" class="form-horizontal" action="/register" onsubmit="return validate_form(this)" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">邮箱</label>
+                                    <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="please input your email" name="email"/><br/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">密码</label>
+                                    <div class="col-sm-9">
+                            <input type="password" class="form-control" placeholder="please input your password" name="password" id="password1"/><br/>
+                            <input type="password" class="form-control" placeholder="please check your password" name="checkpassword" id="password2"/><br/>
+                            <input type="submit" class="btn btn-primary" align="right" value="注册"            />
+                                </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
                 {% endif %}
             </ul>
         </div>
@@ -59,6 +122,7 @@
 
 {% block scripts %}
     {{ super() }}
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
     {{ moment.include_moment() }}
     {% block script %}{% endblock -%}
 {% endblock %}
