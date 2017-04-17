@@ -1,46 +1,10 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-	<script type="text/javascript">	
-		function validate_email(field,alerttxt) {
-			with (field) {
-				apos = value.indexOf("@");
-				dotpos = value.lastIndexOf(".");
-				if (apos<1||dotpos-apos<2) {
-					alert(alerttxt);
-					return false;
-				} else {
-					return true;
-				}
-			}
-		}
-    	function topassword() {
-        	//document.write("Hello World!");
-        	var p1 = document.getElementById("password1").value;
-        	var p2 = document.getElementById("password2").value;
-        	if (p1 == p2) {
-            	//alert("password right");
-            	return true;
-        	} else {
-            	alert("password wrong");
-            	return false;
-        	}
-    	}
-    	function validate_form(thisform) {
-    		with (thisform) {
-				if (validate_email(email,"Not a valid e-mail address!")==false) {
-					email.focus();
-					return false;
-				}
-				return topassword()
-			}
-    	}
-	</script>
-
 	<div class="header">
-		<h1>Register</h1>
+		<h1>用户注册</h1>
 	</div>
-	<div class="container">
+	<div class="container-fluid">
 		<div class="item">
 			<form role="form" action="" onsubmit="return validate_form(this)" method="post" >
 				<div class="form-group">
@@ -51,5 +15,29 @@
 				</div>
 			</form>
 		</div>
+
+		<!-- <div class="form row">
+			<form class="form-horizontal col-sm-offset-3 col-md-offset-3" id="register_form">
+				<h3 class="form-title">Login to your account</h3>
+				<div class="col-sm-9 col-md-9">
+					<div class="form-group">
+						<input class="form-control required" type="text" placeholder="Username" name="username" autofocus="autofocus"/>
+					</div>
+					<div class="form-group">
+							<input class="form-control required" type="password" placeholder="Password" id="register_password" name="password"/>
+					</div>
+					<div class="form-group">
+							<input class="form-control required" type="password" placeholder="Re-type Your Password" name="rpassword"/>
+					</div>
+					<div class="form-group">
+							<input class="form-control eamil" type="text" placeholder="Email" name="email"/>
+					</div>
+					<div class="form-group">
+						<input type="submit" class="btn btn-success pull-right" value="Sign Up "/>
+						<input type="submit" class="btn btn-info pull-left" id="back_btn" value="Back"/>
+					</div>
+				</div>
+			</form>
+		</div> -->
 	</div>
 {% endblock %}

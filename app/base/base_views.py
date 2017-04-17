@@ -67,6 +67,11 @@ def base_register_user():
         print request.form
         email = request.form.get('email')
         password = request.form.get("password")
+        check_user = User.query.filter_by(email=str(email)).first()
+        if check_user is not None:
+            flash("The email address has already been registered.")
+            return render_template('register.html')
+
         user = User(email=email, password=password)
         db.session.add(user)
         db.session.commit()
