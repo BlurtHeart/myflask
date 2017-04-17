@@ -59,7 +59,8 @@
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">密码</label>
                                     <div class="col-sm-9">
-                            <input type="password" class="form-control" placeholder="please input           passwd" name="passwd"/><br/>
+                            <input type="password" class="form-control" placeholder="please input passwd" name="passwd"/><br/>
+                            <input type=hidden value="{{ next or '' }}" name=next>
                             <input type="submit" class="btn btn-primary" align="right" value="Login"            />
                                 </div>
                                     </div>
@@ -91,10 +92,15 @@
                                     <label class="control-label col-sm-3">密码</label>
                                     <div class="col-sm-9">
                             <input type="password" class="form-control" placeholder="please input your password" name="password" id="password1"/><br/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" col-sm-3">确认密码</label>
+                                    <div class="col-sm-9">
                             <input type="password" class="form-control" placeholder="please check your password" name="checkpassword" id="password2"/><br/>
                             <input type="submit" class="btn btn-primary" align="right" value="注册"            />
-                                </div>
                                     </div>
+                                </div>
                             </form>
                         </div>
                     </div>
