@@ -9,6 +9,7 @@ from flask_principal import Principal, Identity, AnonymousIdentity, identity_cha
 from ..decorators import admin_required, permission_required
 from ..models import Permission, Role
 from ..libs.email import send_email
+from ..libs.saferedirect import redirect_back
 import json
 
 @base.app_errorhandler(403)
@@ -45,7 +46,7 @@ def base_login():
         if user is not None and user.verify_password(passwd):
             login_user(user)
             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-            return render_template('utils.html', content=u'login ok!')
+            return redirect_back('base.base_index')
         else:
             flash('Invalid username or password.')
             return render_template('login.html')
@@ -82,7 +83,8 @@ def base_register_user():
 
 @base.route('/about')
 def base_about():
-    return render_template('utils.html', content="About Page")
+    next = url_for('base.base_about')
+    return render_template('utils.html', content="About Page", next=next)
 
 @base.route('/profile')
 @login_required
