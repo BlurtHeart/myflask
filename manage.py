@@ -1,7 +1,7 @@
 from app import create_app, db
 import os
 
-app = create_app()
+app = create_app('development')
 # why here push app context
 context = app.app_context()
 context.push()

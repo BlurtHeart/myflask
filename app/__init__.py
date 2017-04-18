@@ -16,10 +16,10 @@ login_manager.session_protection = 'strong'
 db = SQLAlchemy()
 
 # create app
-def create_app():
+def create_app(config_name):
     app = Flask(__name__)
     CORS(app)
-    app.config.from_object(config['development'])
+    app.config.from_object(config[config_name])
     # config['development'].init_app(app)
 
     mail.init_app(app)
