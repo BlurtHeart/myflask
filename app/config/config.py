@@ -11,6 +11,7 @@ class Config:
     FLASKY_MAIL_SUBJECT_PREFIX = '[myflask]'
     FLASKY_MAIL_SENDER = 'myflask admin <stevecloud@126.com>'
     FLASKY_ADMIN = "fuhongbofhb@163.com"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
     DEBUG = True
