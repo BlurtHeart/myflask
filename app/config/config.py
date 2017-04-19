@@ -6,11 +6,11 @@ class Config:
     MAIL_SERVER = 'smtp.126.com'
     MAIL_PORT = 25
     MAIL_USE_TLS = False
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'stevecloud@126.com'
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'abcd12345'
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FLASKY_MAIL_SUBJECT_PREFIX = '[myflask]'
-    FLASKY_MAIL_SENDER = 'myflask admin <stevecloud@126.com>'
-    FLASKY_ADMIN = "fuhongbofhb@163.com"
+    FLASKY_MAIL_SENDER = 'myflask admin <%s>' %MAIL_USERNAME
+    FLASKY_ADMIN = "administrator@test.com"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
@@ -21,6 +21,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+    FLASKY_ADMIN = "administrator@test.com"
 
 config = {
     'development': DevelopmentConfig,
