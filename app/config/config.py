@@ -2,6 +2,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
+    FLASK_SERVER_ADDR = '0.0.0.0'
+    FLASK_SERVER_PORT = 8000
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Can You Guess Out?'
     MAIL_SERVER = 'smtp.126.com'
     MAIL_PORT = 25
