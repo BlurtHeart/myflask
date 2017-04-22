@@ -1,11 +1,29 @@
-#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+"""
+    sqllib
+    ~~~~~~~~~~~~~~~~~~~
+
+    general databaseclient for sqlite3.
+
+    :copyright: (c) 2017 by Blurt Heart.
+    :license: BSD, see LICENSE for more details.
+"""
 import sqlite3
 
+__all__ = ['DataBaseClient']
+
+def dict_factory(cursor, row): 
+  d = {} 
+  for idx, col in enumerate(cursor.description): 
+    d[col[0]] = row[idx] 
+  return d
+
 class DataBaseClient(object):
-    def __init__(self, path='data-base.db'):
+    def __init__(self, path='data-dev.sqlite'):
         self.path = path
         try:
             self.conn = sqlite3.connect(self.path)
+            self.conn.row_factory = dict_factory
             self.cur = self.conn.cursor()
         except Exception as e:
             print(e)
@@ -39,7 +57,7 @@ class DataBaseClient(object):
         if cursor is None or conn is None:
             return 0
         try:
-            cur.execute(sql)
+            cursor.execute(sql)
             conn.commit()
             return 1
         except Exception as e:
@@ -50,7 +68,7 @@ class DataBaseClient(object):
         if cursor is None:
             return {}
         try:
-            result = cur.fetchone()
+            result = cursor.fetchone()
         except Exception as e:
             print(e)
             result = {}
@@ -60,7 +78,7 @@ class DataBaseClient(object):
         if cursor is None:
             return []
         try:
-            result = cur.fetchall()
+            result = cursor.fetchall()
         except Exception as e:
             print(e)
             result = []

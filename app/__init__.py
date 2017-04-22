@@ -34,6 +34,8 @@ def create_app(config_name):
     app.register_blueprint(api_1_0_blueprint, url_prefix='/api')
     from .base import base
     app.register_blueprint(base)
+    from .rest_api import rest_api
+    app.register_blueprint(rest_api, url_prefix='/rest')
 
     from models import Role
     @app.before_first_request

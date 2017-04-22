@@ -1,0 +1,14 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}jQuery Example{% endblock title %}
+
+{% block head %}
+    {{ super() }}
+    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+<script type="text/javascript">
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+{% endblock %}
+{% block body %}
+    {{ super() }}
+{% endblock %}

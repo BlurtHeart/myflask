@@ -1,0 +1,23 @@
+{% extends "jquery/layout.html" %}
+{% block body %}
+<script type="text/javascript">
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/rest/users', {}, function(data) {
+        users = '';
+        for(var i=0; i<data.length; i++) {
+          users += data[i].email + '<br/>';
+        }
+        $('#result').html(users);
+      });
+      return false;
+    };
+
+    $('a#user').bind('click', submit_form);
+  });
+</script>
+<h1>获取用户</h1>
+<p>
+<p><a class="btn" href=# id="user">用户</a>
+<p><span id="result"></span>
+{% endblock %}
