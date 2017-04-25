@@ -14,6 +14,7 @@ class Config:
     FLASKY_MAIL_SENDER = 'myflask admin <%s>' %MAIL_USERNAME
     FLASKY_ADMIN = "administrator@test.com"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    LOGGER_NAME = 'mylogger.log'
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -22,6 +23,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    LOGGER_NAME = 'test-flask.log'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
     FLASKY_ADMIN = "administrator@test.com"
 

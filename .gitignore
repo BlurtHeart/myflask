@@ -2,6 +2,7 @@
 *.pyc
 *.pyo
 *.sqlite
+*.log
 env
 env*
 dist

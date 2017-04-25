@@ -15,17 +15,23 @@ moment = Moment()
 login_manager.session_protection = 'strong'
 db = SQLAlchemy()
 
+
 # create app
 def create_app(config_name):
     app = Flask(__name__)
     CORS(app)
     app.config.from_object(config[config_name])
-    # config['development'].init_app(app)
+
+    import logging
+    from logging.handlers import RotatingFileHandler
+    _handler = RotatingFileHandler(app.config['LOGGER_NAME'], maxBytes=10000, backupCount=1)
+    _handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(_handler)
 
     mail.init_app(app)
     moment.init_app(app)
     bootstrap.init_app(app)
-    app.secret_key = 'you-will-never-guest-out'
+    app.secret_key = app.config['SECRET_KEY']
     app.permanent_session_lifetime = timedelta(minutes=5)
 
     login_manager.init_app(app)
