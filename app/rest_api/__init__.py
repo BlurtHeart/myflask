@@ -10,5 +10,5 @@ from flask import Blueprint
 
 rest_api = Blueprint('rest_api', __name__)
 
-from . import rest_views
+from . import rest_views, authentication
 from . import jqueryexample
