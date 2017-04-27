@@ -30,8 +30,12 @@ def base_500(error):
 
 @base.route('/')
 def base_index():
-    posts = Post.query.all()
-    return render_template('index.html', posts=posts)
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=5,
+        error_out=False)
+    posts = pagination.items
+    return render_template('index.html', posts=posts, pagination=pagination)
 
 @base.route('/login', methods=['POST', 'GET'])
 def base_login():
