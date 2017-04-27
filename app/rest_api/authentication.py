@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 """
-    rest_views
+    authentication
     ~~~~~~~~~~~~~~~~~~~
 
-    provide rest api for client.
+    provide http basic auth for rest api.
 
     :copyright: (c) 2017 by Blurt Heart.
     :license: BSD, see LICENSE for more details.
