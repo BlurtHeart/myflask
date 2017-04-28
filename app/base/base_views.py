@@ -28,6 +28,33 @@ def base_404(error):
 def base_500(error):
     return render_template("utils.html", content='Internal Server Error!')
 
+@base.route('/test', methods=['GET', 'POST'])
+@login_required
+def test():
+    from .forms import PostForm
+    form = PostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.test'))
+    page = request.args.get('page', 1, type=int)
+    show_followed = False
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed', ''))
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Post.query
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=5,
+        error_out=False)
+    posts = pagination.items
+    return render_template('test.html', form=form, posts=posts,
+                           show_followed=show_followed, pagination=pagination)
+
 @base.route('/')
 def base_index():
     page = request.args.get('page', 1, type=int)

@@ -26,6 +26,7 @@
                 <li><a href="{{ url_for('base.base_about') }}">About</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('base.test') }}">测试</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('api_v1.0.post_articles') }}">写博客</a></li>
                     <li class="dropdown">                         

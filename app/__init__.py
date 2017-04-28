@@ -7,6 +7,7 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
 from config.config import config
+from flask_pagedown import PageDown
 
 bootstrap = Bootstrap()
 login_manager = LoginManager()
@@ -14,6 +15,7 @@ mail = Mail()
 moment = Moment()
 login_manager.session_protection = 'strong'
 db = SQLAlchemy()
+pagedown = PageDown()
 
 
 # create app
@@ -28,6 +30,7 @@ def create_app(config_name):
     _handler.setLevel(logging.DEBUG)
     app.logger.addHandler(_handler)
 
+    pagedown.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
     bootstrap.init_app(app)
