@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, Response, render_template, current_app, \
-     session, url_for, redirect, flash
+     session, url_for, redirect, flash, abort
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from flask_login import login_user, logout_user, \
      login_required, current_user
@@ -59,6 +59,31 @@ def post_articles():
         return redirect(url_for('base.base_index'))
     else:
         return render_template('editpost.html')
+
+
+@api.route('/post/update/<int:id>', methods=['GET', 'POST'])
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def update_articles(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and \
+                not current_user.can(Permission.ADMINSTER):
+        abort(403)
+    from .forms import PostForm
+    form = PostForm()
+    if form.validate_on_submit():
+        post.body = form.body.data
+        db.session.add(post)
+        db.session.commit()
+        flash('The article has been update.')
+        return redirect(url_for('.get_post_by_id', id=post.id))
+    form.body.data = post.body
+    form.title.data = post.title
+    form.title.render_kw = {'readonly':'True'}
+    # or
+    # form.title.render_kw = {'disabled':'True'}
+    return render_template('edit_post.html', form=form)
+
 
 @api.route('/post/show/<id>')
 def get_post_by_id(id):
