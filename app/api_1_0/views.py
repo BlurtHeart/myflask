@@ -81,7 +81,8 @@ def update_articles(id):
     form.title.data = post.title
     form.title.render_kw = {'readonly':'True'}
     # or
-    # form.title.render_kw = {'disabled':'True'}
+    # form.title.render_kw = {'disabled':'True '}
+    # form.title.render_kw = {'onfocus':'this.blur()'}
     return render_template('edit_post.html', form=form)
 
 
