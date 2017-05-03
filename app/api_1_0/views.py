@@ -10,6 +10,7 @@ from datetime import timedelta
 from flask_cors import CORS
 from . import api
 from .. import db
+from .forms import PostForm
 
 # login lib
 from ..decorators import admin_required, permission_required
@@ -49,7 +50,9 @@ def otheruser_profile(userid):
 @login_required
 @permission_required(Permission.WRITE_ARTICLES)
 def post_articles():
-    if request.method == 'POST':
+    form = PostForm()
+    # if request.method == 'POST':
+    if form.validate_on_submit():
         body = request.form.get('body')
         title = request.form.get('title')
         author = current_user._get_current_object()
@@ -58,7 +61,8 @@ def post_articles():
         db.session.commit()
         return redirect(url_for('base.base_index'))
     else:
-        return render_template('editpost.html')
+        form.body.render_kw = {'style':'height:275px;'}
+        return render_template('edit_post.html', form=form)
 
 
 @api.route('/post/update/<int:id>', methods=['GET', 'POST'])
@@ -69,7 +73,6 @@ def update_articles(id):
     if current_user != post.author and \
                 not current_user.can(Permission.ADMINSTER):
         abort(403)
-    from .forms import PostForm
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
@@ -78,6 +81,7 @@ def update_articles(id):
         flash('The article has been update.')
         return redirect(url_for('.get_post_by_id', id=post.id))
     form.body.data = post.body
+    form.body.render_kw = {'style':'height:275px;'}
     form.title.data = post.title
     form.title.render_kw = {'readonly':'True'}
     # or
@@ -89,7 +93,7 @@ def update_articles(id):
 @api.route('/post/show/<id>')
 def get_post_by_id(id):
     post = Post.query.filter_by(id=id).first()
-    return render_template('post.html', post=post)
+    return render_template('post.html', posts=[post])
 
 @api.route('/follow/<userid>')
 @login_required

@@ -5,18 +5,24 @@
 <div class="page-header">
     <h1>Hello, {% if current_user.is_authenticated %}{% if current_user.name %}{{ current_user.name }}{% else %}{{ current_user.email }}<a href="nickname/set">设置您的昵称</a>{% endif %}{% else %}Stranger{% endif %}!</h1>
     {% if current_user.is_authenticated %}
-        <div>
-            <a href="{{ url_for('.base_profile') }}">个人信息</a>
-        </div>
-    	{% for post in posts %}
-    		<li class="posts">
-    			<div>{{ moment(post.timestamp).fromNow() }}</div>
-    			<div>
+        <div class="post-tabs">
+            <ul class="nav nav-tabs">
+            <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.base_index') }}">All</a></li>
+            {% if current_user.is_authenticated %}
+            <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.base_index') }}">Followers</a></li>
+            {% endif %}
+            </ul>
+        
+    	    {% for post in posts %}
+    		   <li class="posts">
+    			  <div>{{ moment(post.timestamp).fromNow() }}</div>
+    			  <div>
     				<a href="{{ url_for('api_v1.0.otheruser_profile', userid=post.author.id) }}">{{ post.author.name }}</a>
-    			</div>
-    			<div><a href="{{ url_for('api_v1.0.get_post_by_id', id=post.id) }}">{{ post.title }}</a></div>
-    		</li>
-    	{% endfor %}
+    			  </div>
+    			<div><a href="{{ url_for('api_v1.0.get_post_by_id', id=post.id) }}">{% if post.title %}{{ post.title }}{% else %}无题{% endif %}</a></div>
+    		   </li>
+    	    {% endfor %}
+        </div>
         {% if pagination %}
         <div class="pagination">
             {{ macros.pagination_widget(pagination, 'base.base_index') }}
