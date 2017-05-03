@@ -10,11 +10,11 @@ from datetime import timedelta
 from flask_cors import CORS
 from . import api
 from .. import db
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 
 # login lib
 from ..decorators import admin_required, permission_required
-from ..models import Permission, Role, User, Post
+from ..models import Permission, Role, User, Post, Comment
 
 @api.after_request
 def after_request(response):
@@ -90,10 +90,28 @@ def update_articles(id):
     return render_template('edit_post.html', form=form)
 
 
-@api.route('/post/show/<id>')
+@api.route('/post/show/<id>', methods=['GET', 'POST'])
+@login_required
 def get_post_by_id(id):
-    post = Post.query.filter_by(id=id).first()
-    return render_template('post.html', posts=[post])
+    post = Post.query.get_or_404(id)
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                        post=post,
+                        author=current_user._get_current_object())
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been published')
+        return redirect(url_for('.get_post_by_id', id=post.id, page=-1))
+    page = request.args.get('page', 1, type=int)
+    if page == -1:
+        page = (post.comments.count() - 1) / 5 + 1
+    pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
+                page, per_page=5, error_out=False)
+    comments = pagination.items
+    return render_template('post.html', posts=[post], form=form, 
+                        comments=comments, pagination=pagination)
+
 
 @api.route('/follow/<userid>')
 @login_required

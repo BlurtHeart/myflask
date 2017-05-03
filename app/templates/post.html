@@ -1,7 +1,23 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 
 {% block title %}MyBlog - Post{% endblock %}
 
 {% block page_content %}
-	{% include '_posts.html' %}
+{% for post in posts %}
+	{% include '_post.html' %}
+    <h4 id="comments">Comments</h4>
+    {% if current_user.can(Permission.COMMENT) %}
+    <div class="comment-form">
+        {{ wtf.quick_form(form, button_map={'submit':'btn btn-primary'}) }}
+    </div>
+    {% endif %}
+    {% include '_comments.html' %}
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'api_v1.0.get_post_by_id', fragment='#comments', id=post.id) }}
+    </div>
+    {% endif %}
+{% endfor %}
 {% endblock %}
