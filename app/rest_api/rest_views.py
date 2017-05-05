@@ -34,9 +34,9 @@ def test():
     passwd = request.form.get('passwd')
     user = User.query.filter_by(email=str(email)).first()
     if user is None:
-        retdata = {'message':'login failed!'}
+        retdata = {'message':'login failed!', 'result':'failed'}
     else:
-        retdata = {'message':'login success!'}
+        retdata = {'message':'login success!', 'result':'success'}
     return json_response(retdata)
 
 

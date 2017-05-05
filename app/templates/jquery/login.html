@@ -8,8 +8,8 @@
 {% block title %}Blog{% endblock %}
 
 {% block content %}
-<a href="#mylogin2" data-toggle="modal">登录</a>
-<div class="modal fade" id="mylogin2" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel">
+<a href="#mylogin2" id="login-href" data-toggle="modal">登录</a>
+<div class="modal fade" id="mylogin2" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -32,7 +32,7 @@
                             <input type="password" class="form-control" placeholder="please input passwd" name="passwd"/><br/>
                             <input type=hidden value="{{ next or '' }}" name=next>
                             <input type="submit" class="btn btn-primary" align="right" value="登录"            />
-                            <button id="hide-modal" class="btn btn-danger">关闭</button>
+                            <button id="hide-modal" class="btn btn-danger" data-dismiss="modal">关闭</button>
                                     </div>
                                 </div>
                             </form>
@@ -47,20 +47,12 @@
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script>
-    $('#mylogin2').modal({
-        show:true,
-        backdrop:'static'
-    });
-    $("#hide-modal").click(function(){
-        $("#mylogin2").modal('hide');
-    });
     $('#form').submit(function(e) {
         var form = $(this);
         var formdata = false;
         if(window.FormData) {
             formdata = new FormData(form[0]);
         }
-
         var formAction = form.attr('action');
         $.ajax({
             type    :   'POST',
@@ -72,8 +64,9 @@
             dataType:'json',
 
             success:function(response) {
-                if (response.type == 'success') {
+                if (response.result == 'success') {
                     $('#message').addClass('alert alert-success').text(response.message);
+                    location.href = response.next;
                 } else {
                     $('#message').addClass('alert alert-danger').text(response.message);
                 }
