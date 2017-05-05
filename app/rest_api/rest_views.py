@@ -9,7 +9,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from . import rest_api
-from flask import request, Response, abort
+from flask import request, Response, abort, render_template
 from ..models import User, Role
 import json
 from ..sqllib import DataBaseClient
@@ -24,6 +24,20 @@ def rest_index():
     n = db.execute(sql)
     ret = db.fetchall()
     return json_response(ret)
+
+
+@rest_api.route('/login', methods=['GET', 'POST'])
+def test():
+    if request.method == 'GET':
+        return render_template('jquery/login.html')
+    email = request.form.get('email')
+    passwd = request.form.get('passwd')
+    user = User.query.filter_by(email=str(email)).first()
+    if user is None:
+        retdata = {'message':'login failed!'}
+    else:
+        retdata = {'message':'login success!'}
+    return json_response(retdata)
 
 
 @rest_api.route('/user/register', methods=['POST'])
