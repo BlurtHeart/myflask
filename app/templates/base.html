@@ -34,15 +34,15 @@
                     <li><a href="{{ url_for('api_v1.0.post_articles') }}">写博客</a></li>
                     <li class="dropdown">                         
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('base.base_profile') }}">用户资料</a></li>
-                                <li><a href="{{ url_for('base.base_logout') }}">登出</a></li>
-                            </ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('base.base_profile') }}">用户资料</a></li>
+                            <li><a href="{{ url_for('base.base_logout') }}">登出</a></li>
+                        </ul>
                     </li>
                 {% else %}
                     <!-- <li><a href="{{ url_for('base.base_login') }}">登录</a></li> -->
                     <li><a href="#mylogin" data-toggle="modal">登录</a></li>
-                    <div class="modal fade" id="mylogin" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel">
+                    <div class="modal fade" id="mylogin" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -52,8 +52,9 @@
                             </button>
                             <h4 class="modal-title" id="mymodaltitle">用户登录</h4>
                         </div>
+                        <div id="loginmessage"></div>
                         <div class="modal-body">
-                            <form role="form" class="form-horizontal" action="/login" method="post">
+                            <form id="loginform" role="form" class="form-horizontal" action="" method="post">
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">用户名</label>
                                     <div class="col-sm-9">
@@ -64,6 +65,7 @@
                             <input type="password" class="form-control" placeholder="please input passwd" name="passwd"/><br/>
                             <input type=hidden value="{{ next or '' }}" name=next>
                             <input type="submit" class="btn btn-primary" align="right" value="登录"            />
+                            <button class="btn btn-danger" data-dismiss="modal">关闭</button>
                                     </div>
                                 </div>
                             </form>

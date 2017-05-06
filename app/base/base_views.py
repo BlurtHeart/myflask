@@ -9,7 +9,8 @@ from flask_principal import Principal, Identity, AnonymousIdentity, identity_cha
 from ..decorators import admin_required, permission_required
 from ..models import Permission, Role
 from ..libs.email import send_email
-from ..libs.saferedirect import redirect_back
+# from ..libs.saferedirect import redirect_back
+from ..libs.jsonlib import json_response
 import json
 
 @base.app_errorhandler(403)
@@ -29,32 +30,18 @@ def base_500(error):
     return render_template("utils.html", content='Internal Server Error!')
 
 @base.route('/test', methods=['GET', 'POST'])
-@login_required
 def test():
-    from .forms import PostForm
-    form = PostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    title=form.title.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.test'))
-    page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-    if show_followed:
-        query = current_user.followed_posts
+    if request.method == 'GET':
+        return render_template('test.html')
+    from flask import jsonify
+    email = request.form.get('email')
+    passwd = request.form.get('passwd')
+    user = User.query.filter_by(email=str(email)).first()
+    if user is None:
+        retdata = {'message':'login failed!'}
     else:
-        query = Post.query
-    pagination = query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=5,
-        error_out=False)
-    posts = pagination.items
-    return render_template('test.html', form=form, posts=posts,
-                           show_followed=show_followed, pagination=pagination)
+        retdata = {'message':'login success!'}
+    return jsonify(retdata)
 
 @base.route('/')
 def base_index():
@@ -65,25 +52,29 @@ def base_index():
     posts = pagination.items
     return render_template('index.html', posts=posts, pagination=pagination)
 
-@base.route('/login', methods=['POST', 'GET'])
+@base.route('/login', methods=['POST'])
 def base_login():
     if request.method == 'POST':
         if request.json is None:
             email = request.form.get('email')
             passwd = request.form.get('passwd')
+            next = request.form.get('next') or url_for('.base_index')
         else:
             email = request.json.get('email')
             passwd = request.json.get('passwd')
+            next = request.form.get('next') or url_for('.base_index')
         user = User.query.filter_by(email=str(email)).first()
         if user is not None and user.verify_password(passwd):
             login_user(user)
             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-            return redirect_back('base.base_index')
+            retdata = {'result':True, 'message':'login success!', 'next':next}
+            # return redirect_back('base.base_index')
         else:
-            flash('Invalid username or password.')
-            return render_template('login.html')
-    else:
-        return render_template('login.html')
+            retdata = {'result':False, 'message':'Invalid username or password!', 'next':next}
+            # flash('Invalid username or password.')
+            # return render_template('login.html')
+        return json_response(retdata)
+        
 
 @base.route('/logout')
 @login_required

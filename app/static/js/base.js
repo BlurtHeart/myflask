@@ -31,3 +31,37 @@ function validate_form(thisform) {
 		return topassword();
 	}
 }
+
+
+$('#loginform').submit(function(e) {
+    var form = $(this);
+    var formdata = false;
+    if(window.FormData) {
+        formdata = new FormData(form[0]);
+    }
+    var formAction = form.attr('action');
+    $.ajax({
+        type    :   'POST',
+        url     :   '/login',
+        cache   :   false,
+        data    :   formdata ? formdata : form.serialize(),
+        contentType:false,
+        processData:false,
+        dataType:'json',
+        success:function(response) {
+            if (response.result == true) {
+                $('#loginmessage').addClass('alert alert-success').text(response.message);
+                location.href = response.next;
+            } else {
+                $('#loginmessage').addClass('alert alert-danger').text(response.message);
+            }
+        }
+    });
+    e.preventDefault();
+});
+
+
+$('#mylogin').on('hidden.bs.modal', function () {
+    $(this).find('form').trigger('reset');
+    $('#loginmessage').removeClass('alert alert-danger').text('');
+})

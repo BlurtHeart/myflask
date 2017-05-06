@@ -19,9 +19,9 @@
                             </button>
                             <h4 class="modal-title" id="mymodaltitle">用户登录</h4>
                         </div>
-                        <div id="message"></div>
+                        <div id="restmessage"></div>
                         <div class="modal-body">
-                            <form role="form" id="form" class="form-horizontal" action="" method="post">
+                            <form role="form" id="restform" class="form-horizontal" action="" method="post">
                                 <div class="form-group">
                                     <label class="control-label col-sm-3">用户名</label>
                                     <div class="col-sm-9">
@@ -47,7 +47,7 @@
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script>
-    $('#form').submit(function(e) {
+    $('#restform').submit(function(e) {
         var form = $(this);
         var formdata = false;
         if(window.FormData) {
@@ -65,10 +65,10 @@
 
             success:function(response) {
                 if (response.result == 'success') {
-                    $('#message').addClass('alert alert-success').text(response.message);
+                    $('#restmessage').addClass('alert alert-success').text(response.message);
                     location.href = response.next;
                 } else {
-                    $('#message').addClass('alert alert-danger').text(response.message);
+                    $('#restmessage').addClass('alert alert-danger').text(response.message);
                 }
             }
         });
