@@ -15,19 +15,49 @@ import json
 
 @base.app_errorhandler(403)
 def forbidden_403(error):
+    if request.accept_mimetypes.accept_json and not \
+        request.accept_mimetypes.accept_html:
+        response = json_response({'error':'Forbidden'})
+        response.status_code = 403
+        return response
     return render_template("utils.html", content='User Forbidden!')
 
 @base.app_errorhandler(401)
 def forbidden_401(error):
+    if request.accept_mimetypes.accept_json and not \
+        request.accept_mimetypes.accept_html:
+        response = json_response({'error':'Unauthorized'})
+        response.status_code = 401
+        return response
     return render_template("utils.html", content='User Unauthorized!')
 
 @base.app_errorhandler(404)
 def base_404(error):
+    print request.accept_mimetypes
+    if request.accept_mimetypes.accept_json and not \
+        request.accept_mimetypes.accept_html:
+        response = json_response({'error':'Page Not Found'})
+        response.status_code = 404
+        return response
     return render_template("utils.html", content='Page Not Found!')
 
 @base.app_errorhandler(500)
 def base_500(error):
+    if request.accept_mimetypes.accept_json and not \
+        request.accept_mimetypes.accept_html:
+        response = json_response({'error':'Internal Server Error'})
+        response.status_code = 500
+        return response
     return render_template("utils.html", content='Internal Server Error!')
+
+@base.app_errorhandler(400)
+def base_400(error):
+    if request.accept_mimetypes.accept_json and not \
+        request.accept_mimetypes.accept_html:
+        response = json_response({'error':'Bad Request'})
+        response.status_code = 400
+        return response
+    return render_template('utils.html', content='Bad Request!')
 
 @base.route('/test', methods=['GET', 'POST'])
 def test():
