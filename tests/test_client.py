@@ -13,6 +13,7 @@ from app import create_app, db
 from flask import url_for, redirect
 from app.models import Role, User
 import unittest
+import json
 
 
 class FlaskClientTestCase(unittest.TestCase):
@@ -48,4 +49,10 @@ class FlaskClientTestCase(unittest.TestCase):
                 "email":"test@test.com",
                 "passwd":"xxxxxxxx"
             })
-        self.assertTrue(response.status_code==302)
+        self.assertTrue(response.status_code==200)
+        try:
+            body = json.loads(response.data)
+        except ValueError:
+            self.fail('response is not a json data!')
+        self.assertTrue('result' in body)
+        self.assertTrue(body['result'] is True)
