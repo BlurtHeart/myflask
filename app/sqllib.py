@@ -41,6 +41,13 @@ class DataBaseClient(object):
             print(e)
             self.conn = None
             self.cur = None
+    def __enter__(self):
+        return self
+    def __exit__(self, Type, value, traceback):
+        if not self.cur:
+            self.cur.close()
+        if not self.conn:
+            self.conn.close()
     def get_cursor(self):
         cursor = getattr(self, 'cursor', None)
         if cursor is None:
