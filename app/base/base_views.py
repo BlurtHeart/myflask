@@ -33,7 +33,6 @@ def forbidden_401(error):
 
 @base.app_errorhandler(404)
 def base_404(error):
-    print request.accept_mimetypes
     if request.accept_mimetypes.accept_json and not \
         request.accept_mimetypes.accept_html:
         response = json_response({'error':'Page Not Found'})
@@ -117,7 +116,6 @@ def base_register_user():
     if request.method=="GET":
         return render_template('register.html')
     else:
-        print request.form
         email = request.form.get('email')
         password = request.form.get("password")
         check_user = User.query.filter_by(email=str(email)).first()
