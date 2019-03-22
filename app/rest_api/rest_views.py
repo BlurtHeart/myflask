@@ -70,7 +70,7 @@ def rest_register_user():
         else:
             result = 1
         reason = ''
-    except Exception, exp:
+    except Exception as exp:
         result = 0
         reason = str(exp)
     return json_response({"result":result, "reason":reason})
@@ -100,7 +100,7 @@ def rest_post():
                 result = 0
             else:
                 result = 1
-    except Exception, exp:
+    except Exception as exp:
         result = 0
         reason = str(exp)
     return json_response({'result':result, 'reason':reason})
@@ -135,7 +135,7 @@ def rest_comment(post_id):
             result = 0
         else:
             result = 1
-    except Exception, exp:
+    except Exception as exp:
         result = 0
         reason = str(exp)
     return json_response({'result':result, 'reason':reason})

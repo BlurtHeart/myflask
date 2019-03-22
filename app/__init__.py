@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
-from config.config import config
+from .config.config import config
 from flask_pagedown import PageDown
 
 bootstrap = Bootstrap()
@@ -46,7 +46,7 @@ def create_app(config_name):
     from .rest_api import rest_api
     app.register_blueprint(rest_api, url_prefix='/rest')
 
-    from models import Role
+    from .models import Role
     @app.before_first_request
     def build_up_before_start():
         Role.insert_roles()

@@ -182,8 +182,6 @@ def post_test():
 
 @api.route('/test', methods=['GET', 'POST'])
 def test():
-    print request.headers
-    print request.path
     if request.method == 'GET':
         return get_test()
     elif request.method == 'POST':
